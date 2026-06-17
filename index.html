@@ -1,0 +1,487 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Hindi&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700&family=DM+Mono:wght@400;500&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --g:#2d5a27;--g2:#4a7c42;--g3:#d6ead4;--gold:#b8912a;--gold2:#e8c97a;--gold3:#fdf4e0;
+    --ink:#1c1c1c;--ink2:#555;--ink3:#999;--cream:#fdfaf3;--white:#fff;
+    --border:#ddd0a8;--red:#b5251e;--red2:#fdecea;--orange:#c07020;--orange2:#fff3e0;
+    --blue:#1a4a8a;--blue2:#e8f0fb;
+  }
+  body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);font-size:14px;line-height:1.6}
+  input,select{font-family:inherit;font-size:13px;padding:8px 11px;border:1.5px solid var(--border);border-radius:7px;background:var(--white);width:100%;outline:none;transition:border-color .18s;color:var(--ink)}
+  input:focus,select:focus{border-color:var(--g2)}
+  input[type=number]{font-family:'DM Mono',monospace}
+  label{display:block;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);margin-bottom:4px}
+  .hint{font-size:11px;color:var(--ink3);margin-top:3px;font-style:italic}
+  button{font-family:inherit;cursor:pointer;border:none;border-radius:8px;transition:all .15s}
+  .badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.04em}
+  .ok{background:var(--g3);color:var(--g)}.warn{background:var(--orange2);color:var(--orange)}.reject{background:var(--red2);color:var(--red)}
+  .header{background:var(--g);padding:16px 20px;display:flex;align-items:center;gap:14px}
+  .logo{width:44px;height:44px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:18px;font-weight:700;color:var(--white)}
+  .header-text h1{font-family:'Fraunces',serif;font-size:1.4rem;color:var(--gold2);font-weight:700;line-height:1.1}
+  .header-text p{font-size:11px;color:rgba(255,255,255,.6);letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
+  .header-nav{margin-left:auto;display:flex;gap:8px}
+  .nav-btn{padding:7px 14px;border-radius:7px;font-size:12px;font-weight:600;background:rgba(255,255,255,.1);color:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.18);cursor:pointer;transition:background .15s}
+  .nav-btn.active,.nav-btn:hover{background:rgba(255,255,255,.22);color:#fff}
+  .app{max-width:1200px;margin:0 auto;padding:20px 16px 60px}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:700px){.form-grid{grid-template-columns:1fr}}
+  @media(max-width:600px){#histSearchGrid{grid-template-columns:1fr!important}}
+  .field{margin-bottom:13px}
+  .card{background:var(--white);border:1px solid var(--border);border-radius:10px;box-shadow:0 2px 16px rgba(0,0,0,.09);overflow:hidden;margin-bottom:20px}
+  .card-head{background:var(--g);color:var(--gold2);font-family:'Fraunces',serif;font-size:.95rem;padding:12px 18px}
+  .card-body{padding:18px}
+  .calc-btn{width:100%;padding:14px;background:var(--g);color:var(--gold2);font-family:'Fraunces',serif;font-size:1.05rem;letter-spacing:.05em;border-radius:9px;margin-top:8px}
+  .calc-btn:hover{background:var(--g2)}.calc-btn:active{transform:scale(.98)}
+  .pct-wrap{position:relative}.pct-wrap input{padding-right:32px}
+  .pct-wrap .pct-sym{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--ink3);font-family:'DM Mono',monospace;pointer-events:none}
+  .live-val{font-size:11px;color:var(--g);font-family:'DM Mono',monospace;margin-top:3px;min-height:15px}
+  .action-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+  .btn-outline{padding:9px 18px;border:1.5px solid var(--g);color:var(--g);background:transparent;border-radius:8px;font-size:13px;font-weight:600}
+  .btn-outline:hover{background:var(--g3)}
+  .btn-solid{padding:9px 18px;background:var(--g);color:var(--gold2);border-radius:8px;font-size:13px;font-weight:600}
+  .btn-solid:hover{background:var(--g2)}
+  .hist-item{background:var(--white);border:1px solid var(--border);border-radius:9px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .hist-item:hover{border-color:var(--g2)}
+  .hist-item .hi-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+  .hist-item .seller{font-weight:700;font-size:15px;color:var(--g);font-family:'Fraunces',serif}
+  .hist-item .hi-bot{display:flex;gap:10px;flex-wrap:wrap;font-size:11px;color:var(--ink3)}
+  .search-box{position:relative;margin-bottom:14px}.search-box input{padding-left:32px}
+  .search-box .si{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--ink3);font-size:16px}
+  .lang-hi{font-family:'Tiro Devanagari Hindi',serif;font-size:11px;color:var(--ink3);display:block}
+  .conditional{display:none}.conditional.show{display:block}
+  .empty-hist{text-align:center;padding:50px 20px;color:var(--ink3)}
+  .empty-hist .big{font-size:2.5rem;margin-bottom:10px}
+
+  /* ── PRINT STYLES ── */
+  @media print {
+    @page { size: A4 portrait; margin: 8mm 8mm 8mm 8mm; }
+    html,body { background: #fff !important; }
+    .header, #formView, #historyView, .action-row, .nav-btn { display: none !important; }
+    .app { padding: 0 !important; max-width: 100% !important; }
+    #receiptView { display: block !important; }
+    .receipt {
+      border: none !important;
+      box-shadow: none !important;
+      font-size: 10px !important;
+      page-break-inside: avoid;
+    }
+    .receipt-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; padding: 10px 14px !important; }
+    .receipt-header h1 { font-size: 16px !important; }
+    .receipt-header p { font-size: 9px !important; }
+    .receipt-body { padding: 10px 14px !important; }
+    .meta-grid { gap: 5px !important; margin-bottom: 8px !important; }
+    .meta-box { padding: 5px 8px !important; }
+    .meta-box .lbl { font-size: 8px !important; }
+    .meta-box .val { font-size: 11px !important; }
+    .rtable { font-size: 9px !important; }
+    .rtable th { padding: 4px 6px !important; font-size: 8px !important; }
+    .rtable td { padding: 4px 6px !important; }
+    .badge { font-size: 8px !important; padding: 1px 5px !important; }
+    .summary-strip { gap: 5px !important; margin: 8px 0 !important; }
+    .sbox { padding: 6px 8px !important; }
+    .sbox .lbl { font-size: 8px !important; }
+    .sbox .val { font-size: 13px !important; }
+    .final-box { padding: 10px 14px !important; margin-top: 8px !important; }
+    .final-box .val { font-size: 18px !important; }
+    .reject-banner { padding: 6px 10px !important; font-size: 9px !important; margin-bottom: 6px !important; }
+    .terms-row { font-size: 8px !important; margin-top: 8px !important; }
+    .seller-line { font-size: 14px !important; }
+    .ok { background: #d6ead4 !important; color: #2d5a27 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .warn { background: #fff3e0 !important; color: #c07020 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .reject { background: #fdecea !important; color: #b5251e !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .meta-box { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .rtable th { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .final-box { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .summary-strip .sbox { background: var(--cream) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+
+<div class="header">
+  <div class="logo">SA</div>
+  <div class="header-text">
+    <h1>SURANA AGRO INDUSTRIES</h1>
+    <p>Hybrid Maize · Purchase Calculator</p>
+  </div>
+  <div class="header-nav">
+    <button class="nav-btn active" onclick="showView('form')" id="nb-form">New Entry</button>
+    <button class="nav-btn" onclick="showView('history')" id="nb-history">History</button>
+  </div>
+</div>
+
+<div class="app">
+
+<!-- FORM VIEW -->
+<div id="formView">
+  <div class="form-grid">
+    <div>
+      <div class="card">
+        <div class="card-head">📋 Seller &amp; Trade Details</div>
+        <div class="card-body">
+          <div class="field"><label>Invoice No.</label><input type="text" id="invoiceNo" placeholder="e.g. SA-2024-001"></div>
+          <div class="field"><label>Date</label><input type="date" id="txDate"></div>
+          <div class="field"><label>Seller Name <span style="color:var(--gold)">*</span></label><input type="text" id="sellerName" placeholder="Party name"></div>
+          <div class="field"><label>Broker / Through / दलाल</label><input type="text" id="brokerName" placeholder="Broker or agent name (optional)"></div>
+          <div class="field"><label>Vehicle Number / वाहन नंबर</label><input type="text" id="vehicleNo" placeholder="e.g. MP50AB1234" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"></div>
+          <div class="field"><label>Trade Rate (₹/QTL) <span style="color:var(--gold)">*</span></label><input type="number" id="tradeRate" placeholder="e.g. 2200" step="0.01" min="0" oninput="updateLive()"></div>
+          <div class="field"><label>Weight Received at Our Factory (QTL) <span style="color:var(--gold)">*</span></label><input type="number" id="receivedWt" placeholder="e.g. 98" step="0.01" min="0" oninput="updateLive()"></div>
+          <div class="field">
+            <label>Jute Bag Deduction (% of received weight)</label>
+            <div class="pct-wrap"><input type="number" id="juteBagPct" placeholder="e.g. 0.5" step="0.01" min="0" max="100" oninput="updateLive()"><span class="pct-sym">%</span></div>
+            <div class="live-val" id="juteLive"></div>
+          </div>
+          <div class="field">
+            <label>Damaged Bardana (bags)</label>
+            <input type="number" id="damagedBags" placeholder="e.g. 3" step="1" min="0" oninput="updateLive()">
+            <div class="hint">₹10 per damaged bag</div>
+            <div class="live-val" id="bardanaLive"></div>
+          </div>
+          <div class="field">
+            <label>Additional Discount (% of base amount)</label>
+            <div class="pct-wrap"><input type="number" id="extraDiscountPct" placeholder="e.g. 1" step="0.01" min="0" max="100" oninput="updateLive()"><span class="pct-sym">%</span></div>
+            <div class="live-val" id="discountLive"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <div class="card-head">🌽 Quality Parameters / गुणवत्ता मापदंड</div>
+        <div class="card-body">
+          <div class="field">
+            <label>Moisture % / नमी</label>
+            <div class="pct-wrap"><input type="number" id="moisture" value="14" step="0.1" min="0" max="100" oninput="toggleConditional('moisture',this.value)"><span class="pct-sym">%</span></div>
+            <div class="hint">≤14% free · 14–15% ×1 · 15–17% custom · &gt;17% REJECT</div>
+          </div>
+          <div class="conditional" id="cond-moisture">
+            <div class="field" style="background:var(--orange2);border-radius:8px;padding:10px;margin-bottom:13px">
+              <label>⚠ Moisture 15–17%: Custom Multiplier</label>
+              <input type="number" id="moistureMult" placeholder="e.g. 1.5" step="0.1" min="0">
+            </div>
+          </div>
+          <div class="field">
+            <label>Starch % / स्टार्च</label>
+            <div class="pct-wrap"><input type="number" id="starch" value="58" step="0.1" min="0" max="100"><span class="pct-sym">%</span></div>
+            <div class="hint">≥58% free · 56–58%: (58−S)×2% · &lt;56% REJECT</div>
+          </div>
+          <div class="field">
+            <label>Water Damage % / पानी क्षति</label>
+            <div class="pct-wrap"><input type="number" id="waterDmg" value="0" step="0.1" min="0" max="100" oninput="toggleConditional('waterDmg',this.value)"><span class="pct-sym">%</span></div>
+            <div class="hint">≤3% free · 3–5% ×1 · 5–7% custom · &gt;7% REJECT</div>
+          </div>
+          <div class="conditional" id="cond-waterDmg">
+            <div class="field" style="background:var(--orange2);border-radius:8px;padding:10px;margin-bottom:13px">
+              <label>⚠ Water Damage 5–7%: Custom Multiplier</label>
+              <input type="number" id="waterDmgMult" placeholder="e.g. 1.2" step="0.1" min="0">
+            </div>
+          </div>
+          <div class="field">
+            <label>Fungus % / फफूंद</label>
+            <div class="pct-wrap"><input type="number" id="fungus" value="0" step="0.1" min="0" max="100" oninput="toggleConditional('fungus',this.value)"><span class="pct-sym">%</span></div>
+            <div class="hint">≤2% free · 2–3% ×0.5 · 3–5% custom · &gt;5% REJECT</div>
+          </div>
+          <div class="conditional" id="cond-fungus">
+            <div class="field" style="background:var(--orange2);border-radius:8px;padding:10px;margin-bottom:13px">
+              <label>⚠ Fungus 3–5%: Custom Multiplier</label>
+              <input type="number" id="fungusMult" placeholder="e.g. 0.7" step="0.1" min="0">
+            </div>
+          </div>
+          <div class="field">
+            <label>Weevilled Grain % / घुन</label>
+            <div class="pct-wrap"><input type="number" id="weevilled" value="0" step="0.1" min="0" max="100"><span class="pct-sym">%</span></div>
+            <div class="hint">≤0.5% free · 0.5–1.5% ×1.5 · 1.5–2% ×2 · &gt;2% REJECT</div>
+          </div>
+          <div class="field">
+            <label>TFM % / विदेशी पदार्थ</label>
+            <div class="pct-wrap"><input type="number" id="tfm" value="0" step="0.1" min="0" max="100"><span class="pct-sym">%</span></div>
+            <div class="hint">≤0.5% free · 0.5–2% ×1 · &gt;2% REJECT</div>
+          </div>
+          <div class="field">
+            <label>Discoloured / Immature % / रंग बदला</label>
+            <div class="pct-wrap"><input type="number" id="discoloured" value="0" step="0.1" min="0" max="100"><span class="pct-sym">%</span></div>
+            <div class="hint">≤5% free · 5–8% ×0.5 · 8–10% ×0.75 · &gt;10% REJECT</div>
+          </div>
+          <div class="field">
+            <label>Broken % / टूटा हुआ</label>
+            <div class="pct-wrap"><input type="number" id="broken" value="0" step="0.1" min="0" max="100"><span class="pct-sym">%</span></div>
+            <div class="hint">≤2% free · 2–4% ×1.5 · 4–5% ×1.75 · &gt;5% REJECT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="calc-btn" onclick="calculate()">⚖ Calculate &amp; Generate Receipt / हिसाब लगाएं</button>
+</div>
+
+<!-- RECEIPT VIEW -->
+<div id="receiptView" style="display:none">
+  <div id="receiptContent"></div>
+  <div class="action-row">
+    <button class="btn-solid" onclick="window.print()">🖨 Print / PDF</button>
+    <button class="btn-outline" onclick="saveToHistory()">💾 Save to History</button>
+    <button class="btn-outline" onclick="newEntry()">+ New Entry</button>
+  </div>
+</div>
+
+<!-- HISTORY VIEW -->
+<div id="historyView" style="display:none">
+  <div id="histSearchGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+    <div class="search-box" style="margin-bottom:0">
+      <i class="ti ti-search si"></i>
+      <input type="text" id="searchInput" placeholder="Search by seller, invoice, broker..." oninput="renderHistory()">
+    </div>
+    <div class="search-box" style="margin-bottom:0">
+      <i class="ti ti-search si"></i>
+      <input type="text" id="searchVehicle" placeholder="Search by vehicle number..." oninput="this.value=this.value.toUpperCase();renderHistory()" style="text-transform:uppercase">
+    </div>
+  </div>
+  <div id="historyList"></div>
+</div>
+
+</div>
+
+<script>
+var g=function(id){return document.getElementById(id)};
+var gv=function(id){return parseFloat(g(id).value)||0};
+var gs=function(id){return g(id).value.trim()};
+function fmt(n){return '₹'+Number(n.toFixed(2)).toLocaleString('en-IN',{minimumFractionDigits:2})}
+function fmtP(n){return n.toFixed(3)+'%'}
+
+function showView(v){
+  g('formView').style.display=v==='form'?'block':'none';
+  g('receiptView').style.display=v==='receipt'?'block':'none';
+  g('historyView').style.display=v==='history'?'block':'none';
+  ['form','history'].forEach(function(n){var btn=g('nb-'+n);if(btn)btn.classList.toggle('active',n===v);});
+  if(v==='history') renderHistory();
+}
+
+function toggleConditional(field,val){
+  var v=parseFloat(val)||0;
+  var show=(field==='moisture'&&v>15&&v<=17)||(field==='waterDmg'&&v>5&&v<=7)||(field==='fungus'&&v>3&&v<=5);
+  var el=g('cond-'+field);if(el) el.classList.toggle('show',show);
+}
+
+function updateLive(){
+  var rw=gv('receivedWt'),rate=gv('tradeRate'),jutePct=gv('juteBagPct'),bags=gv('damagedBags'),discPct=gv('extraDiscountPct');
+  var juteWt=rw*(jutePct/100),netWt=rw-juteWt,base=netWt*rate;
+  g('juteLive').textContent=jutePct&&rw?'= '+juteWt.toFixed(3)+' QTL deducted':'';
+  g('bardanaLive').textContent=bags?'= −₹'+(bags*10).toFixed(0):'';
+  g('discountLive').textContent=discPct&&base?'= −'+fmt(base*(discPct/100))+' on base amount':'';
+}
+
+function calcDeductions(base){
+  var rows=[],total=0,rejects=[];
+  function row(p,h,v,pct,amt,st,ty){total+=amt;rows.push({param:p,hindi:h,val:v,pct:pct,amt:amt,status:st,statusType:ty});}
+
+  var m=gv('moisture'),mP=0,mS='No deduction',mT='ok';
+  if(m>17){mS='REJECT';mT='reject';rejects.push('Moisture '+m+'% > 17%');}
+  else if(m>15){var mm=gv('moistureMult');if(mm>0){mP=(m-14)*mm;mS='('+m+'−14)×'+mm+'='+fmtP(mP);mT='warn';}else{mS='Multiplier not set';mT='warn';}}
+  else if(m>14){mP=(m-14)*1;mS='('+m+'−14)×1='+fmtP(mP);mT='warn';}
+  row('Moisture','नमी',m+'%',mP,base*mP/100,mS,mT);
+
+  var s=gv('starch'),sP=0,sS='No deduction',sT='ok';
+  if(s>0&&s<56){sS='REJECT';sT='reject';rejects.push('Starch '+s+'% < 56%');}
+  else if(s<58&&s>=56){sP=(58-s)*2;sS='(58−'+s+')×2='+fmtP(sP);sT='warn';}
+  row('Starch','स्टार्च',s+'%',sP,base*sP/100,sS,sT);
+
+  var w=gv('waterDmg'),wP=0,wS='No deduction',wT='ok';
+  if(w>7){wS='REJECT';wT='reject';rejects.push('Water Damage '+w+'% > 7%');}
+  else if(w>5){var wm=gv('waterDmgMult');if(wm>0){wP=(w-3)*wm;wS='('+w+'−3)×'+wm+'='+fmtP(wP);wT='warn';}else{wS='Multiplier not set';wT='warn';}}
+  else if(w>3){wP=(w-3)*1;wS='('+w+'−3)×1='+fmtP(wP);wT='warn';}
+  row('Water Damage','पानी क्षति',w+'%',wP,base*wP/100,wS,wT);
+
+  var f=gv('fungus'),fP=0,fS='No deduction',fT='ok';
+  if(f>5){fS='REJECT';fT='reject';rejects.push('Fungus '+f+'% > 5%');}
+  else if(f>3){var fm=gv('fungusMult');if(fm>0){fP=(f-2)*fm;fS='('+f+'−2)×'+fm+'='+fmtP(fP);fT='warn';}else{fS='Multiplier not set';fT='warn';}}
+  else if(f>2){fP=(f-2)*0.5;fS='('+f+'−2)×0.5='+fmtP(fP);fT='warn';}
+  row('Fungus','फफूंद',f+'%',fP,base*fP/100,fS,fT);
+
+  var wv=gv('weevilled'),wvP=0,wvS='No deduction',wvT='ok';
+  if(wv>2){wvS='REJECT';wvT='reject';rejects.push('Weevilled '+wv+'% > 2%');}
+  else if(wv>1.5){wvP=(wv-0.5)*2;wvS='('+wv+'−0.5)×2='+fmtP(wvP);wvT='warn';}
+  else if(wv>0.5){wvP=(wv-0.5)*1.5;wvS='('+wv+'−0.5)×1.5='+fmtP(wvP);wvT='warn';}
+  row('Weevilled Grain','घुन',wv+'%',wvP,base*wvP/100,wvS,wvT);
+
+  var t=gv('tfm'),tP=0,tS='No deduction',tT='ok';
+  if(t>2){tS='REJECT';tT='reject';rejects.push('TFM '+t+'% > 2%');}
+  else if(t>0.5){tP=(t-0.5)*1;tS='('+t+'−0.5)×1='+fmtP(tP);tT='warn';}
+  row('TFM','विदेशी पदार्थ',t+'%',tP,base*tP/100,tS,tT);
+
+  var d=gv('discoloured'),dP=0,dS='No deduction',dT='ok';
+  if(d>10){dS='REJECT';dT='reject';rejects.push('Discoloured '+d+'% > 10%');}
+  else if(d>8){dP=(d-5)*0.75;dS='('+d+'−5)×0.75='+fmtP(dP);dT='warn';}
+  else if(d>5){dP=(d-5)*0.5;dS='('+d+'−5)×0.5='+fmtP(dP);dT='warn';}
+  row('Discoloured/Immature','रंग बदला',d+'%',dP,base*dP/100,dS,dT);
+
+  var b=gv('broken'),bP=0,bS='No deduction',bT='ok';
+  if(b>5){bS='REJECT';bT='reject';rejects.push('Broken '+b+'% > 5%');}
+  else if(b>4){bP=(b-4)*1.75;bS='('+b+'−4)×1.75='+fmtP(bP);bT='warn';}
+  else if(b>2){bP=(b-2)*1.5;bS='('+b+'−2)×1.5='+fmtP(bP);bT='warn';}
+  row('Broken','टूटा हुआ',b+'%',bP,base*bP/100,bS,bT);
+
+  return{rows:rows,totalDeductAmt:total,rejectReasons:rejects};
+}
+
+var lastResult=null;
+
+function calculate(){
+  var seller=gs('sellerName'),receivedWt=gv('receivedWt'),tradeRate=gv('tradeRate');
+  if(!seller||!receivedWt||!tradeRate){alert('Please fill Seller Name, Received Weight, and Trade Rate.');return;}
+  var juteBagPct=gv('juteBagPct'),damagedBags=gv('damagedBags'),extraDiscountPct=gv('extraDiscountPct');
+  var invoiceNo=gs('invoiceNo')||('SA-'+Date.now()),txDate=gs('txDate')||(new Date().toISOString().split('T')[0]);
+  var brokerName=gs('brokerName'),vehicleNo=gs('vehicleNo');
+  var juteWt=receivedWt*(juteBagPct/100),netWeight=receivedWt-juteWt;
+  var baseAmount=netWeight*tradeRate,bardanaDeduct=damagedBags*10;
+  var extraDiscountAmt=baseAmount*(extraDiscountPct/100);
+  var result=calcDeductions(baseAmount);
+  var finalAmount=baseAmount-result.totalDeductAmt-bardanaDeduct-extraDiscountAmt;
+  lastResult={seller:seller,invoiceNo:invoiceNo,txDate:txDate,receivedWt:receivedWt,juteBagPct:juteBagPct,juteWt:juteWt,
+    damagedBags:damagedBags,tradeRate:tradeRate,netWeight:netWeight,baseAmount:baseAmount,bardanaDeduct:bardanaDeduct,
+    totalQualityDeduct:result.totalDeductAmt,extraDiscountPct:extraDiscountPct,extraDiscountAmt:extraDiscountAmt,
+    finalAmount:finalAmount,rows:result.rows,rejectReasons:result.rejectReasons,brokerName:brokerName,vehicleNo:vehicleNo};
+  renderReceipt(lastResult);
+  showView('receipt');
+  g('nb-form').classList.remove('active');
+}
+
+function renderReceipt(r){
+  var rejectBanner='';
+  if(r.rejectReasons&&r.rejectReasons.length>0){
+    rejectBanner='<div class="reject-banner">⚠ CONSIGNMENT REJECTION / अस्वीकृति &nbsp;|&nbsp; '+r.rejectReasons.join(' · ')+'</div>';
+  }
+  var rowsHtml=r.rows.map(function(row){
+    return '<tr><td><strong>'+row.param+'</strong> <span class="lang-hi">'+row.hindi+'</span></td>'
+      +'<td style="font-family:monospace;text-align:center">'+row.val+'</td>'
+      +'<td style="font-family:monospace;text-align:right">'+(row.pct>0?'−'+row.pct.toFixed(3)+'%':'—')+'</td>'
+      +'<td style="font-family:monospace;text-align:right">'+(row.amt>0?'<span style="color:var(--red)">−'+fmt(row.amt)+'</span>':'—')+'</td>'
+      +'<td style="text-align:center"><span class="badge '+row.statusType+'">'+row.status+'</span></td></tr>';
+  }).join('');
+  var today=new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+  g('receiptContent').innerHTML=
+    '<div class="receipt" style="background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden">'
+    +'<div class="receipt-header" style="background:var(--g);padding:14px 18px;text-align:center">'
+    +'<h1 style="font-family:Fraunces,serif;font-size:1.4rem;color:var(--gold2);margin-bottom:2px">SURANA AGRO INDUSTRIES</h1>'
+    +'<p style="font-size:11px;color:rgba(255,255,255,.6);letter-spacing:.06em">KHAPA ROAD, MEHANDIWARA · DIST BALAGHAT 481331 · PAN: ADJFS0265P · Tel: 9425403001</p>'
+    +'</div>'
+    +'<div class="receipt-body" style="padding:14px 18px">'
+    +rejectBanner
+    +'<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;flex-wrap:wrap;gap:8px">'
+    +'<div><div class="seller-line" style="font-family:Fraunces,serif;font-size:1.2rem;font-weight:700;color:var(--g)">'+r.seller+'</div>'
+    +'<div style="font-size:11px;color:var(--ink3)">Invoice: '+r.invoiceNo+' &nbsp;·&nbsp; Date: '+r.txDate+(r.brokerName?' &nbsp;·&nbsp; Broker: <strong>'+r.brokerName+'</strong>':'')+(r.vehicleNo?' &nbsp;·&nbsp; Vehicle: <strong>'+r.vehicleNo+'</strong>':'')+'</div></div>'
+    +'<div style="text-align:right"><div style="font-size:10px;color:var(--ink3)">Commodity</div>'
+    +'<div style="font-weight:700;color:var(--g);font-size:13px">Hybrid Maize B Class &nbsp; HSN: 1005</div></div>'
+    +'</div>'
+    +'<div class="meta-grid" style="display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:10px">'
+    +'<div class="meta-box" style="background:var(--g3);border-radius:7px;padding:6px 9px"><div class="lbl" style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g2)">Received Wt</div><div class="val" style="font-size:12px;font-weight:700;color:var(--g);font-family:monospace">'+r.receivedWt.toFixed(3)+' QTL</div></div>'
+    +'<div class="meta-box" style="background:var(--g3);border-radius:7px;padding:6px 9px"><div class="lbl" style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g2)">Jute Bags ('+r.juteBagPct+'%)</div><div class="val" style="font-size:12px;font-weight:700;color:var(--g);font-family:monospace">−'+r.juteWt.toFixed(3)+' QTL</div></div>'
+    +'<div class="meta-box" style="background:var(--g3);border-radius:7px;padding:6px 9px"><div class="lbl" style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g2)">Net Weight</div><div class="val" style="font-size:12px;font-weight:700;color:var(--g);font-family:monospace">'+r.netWeight.toFixed(3)+' QTL</div></div>'
+    +'<div class="meta-box" style="background:var(--g3);border-radius:7px;padding:6px 9px"><div class="lbl" style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g2)">Rate</div><div class="val" style="font-size:12px;font-weight:700;color:var(--g);font-family:monospace">₹'+r.tradeRate.toLocaleString('en-IN')+'/QTL</div></div>'
+    +'<div class="meta-box" style="background:var(--g3);border-radius:7px;padding:6px 9px"><div class="lbl" style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g2)">Base Amount</div><div class="val" style="font-size:12px;font-weight:700;color:var(--g);font-family:monospace">'+fmt(r.baseAmount)+'</div></div>'
+    +'<div class="meta-box" style="background:var(--g3);border-radius:7px;padding:6px 9px"><div class="lbl" style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g2)">Bardana</div><div class="val" style="font-size:12px;font-weight:700;color:var(--g);font-family:monospace">'+r.damagedBags+' bags</div></div>'
+    +'</div>'
+    +'<div style="overflow-x:auto"><table class="rtable" style="width:100%;border-collapse:collapse;font-size:12px">'
+    +'<thead><tr>'
+    +'<th style="background:var(--gold3);color:var(--g);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:6px 8px;text-align:left;border-bottom:2px solid var(--border)">Parameter / गुणवत्ता</th>'
+    +'<th style="background:var(--gold3);color:var(--g);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:6px 8px;text-align:center;border-bottom:2px solid var(--border)">Value</th>'
+    +'<th style="background:var(--gold3);color:var(--g);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:6px 8px;text-align:right;border-bottom:2px solid var(--border)">Deduction %</th>'
+    +'<th style="background:var(--gold3);color:var(--g);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:6px 8px;text-align:right;border-bottom:2px solid var(--border)">Amount (₹)</th>'
+    +'<th style="background:var(--gold3);color:var(--g);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:6px 8px;text-align:center;border-bottom:2px solid var(--border)">Status</th>'
+    +'</tr></thead><tbody>'+rowsHtml+'</tbody></table></div>'
+    +'<div class="summary-strip" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:10px 0">'
+    +'<div class="sbox" style="background:var(--cream);border:1px solid var(--border);border-radius:7px;padding:8px 10px"><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:2px">Quality Deductions</div><div style="font-size:15px;font-weight:700;font-family:monospace;color:var(--red)">−'+fmt(r.totalQualityDeduct)+'</div></div>'
+    +'<div class="sbox" style="background:var(--cream);border:1px solid var(--border);border-radius:7px;padding:8px 10px"><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:2px">Bardana Penalty</div><div style="font-size:15px;font-weight:700;font-family:monospace;color:var(--red)">−'+fmt(r.bardanaDeduct)+'</div></div>'
+    +'<div class="sbox" style="background:var(--cream);border:1px solid var(--border);border-radius:7px;padding:8px 10px"><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:2px">Discount ('+r.extraDiscountPct+'%)</div><div style="font-size:15px;font-weight:700;font-family:monospace;color:var(--red)">−'+fmt(r.extraDiscountAmt)+'</div></div>'
+    +'</div>'
+    +'<div class="final-box" style="background:var(--g);border-radius:9px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;margin-top:10px">'
+    +'<div><div style="color:rgba(255,255,255,.7);font-size:13px">Net Payable Amount</div><div style="font-size:11px;font-family:\'Tiro Devanagari Hindi\',serif;color:rgba(255,255,255,.5)">देय राशि</div></div>'
+    +'<div style="color:var(--gold2);font-size:1.5rem;font-family:monospace;font-weight:700">'+fmt(r.finalAmount)+'</div>'
+    +'</div>'
+    +'<div class="terms-row" style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:11px;color:var(--ink3)">'
+    +'<div><strong>Terms:</strong> Net Weight Basis · Final at Factory · No rebate on weight loss · Bardana: ₹10/damaged bag</div>'
+    +'<div style="text-align:right"><strong>Generated:</strong> '+today+'<br>Surana Agro Industries — naveen12surana@gmail.com</div>'
+    +'</div></div></div>';
+}
+
+function saveToHistory(){
+  if(!lastResult) return;
+  var history=JSON.parse(localStorage.getItem('surana_history')||'[]');
+  history.unshift(Object.assign({},lastResult,{savedAt:Date.now()}));
+  if(history.length>200) history=history.slice(0,200);
+  localStorage.setItem('surana_history',JSON.stringify(history));
+  alert('Saved to history! ✓');
+}
+function newEntry(){showView('form');g('nb-form').classList.add('active');}
+function renderHistory(){
+  var history=JSON.parse(localStorage.getItem('surana_history')||'[]');
+  var search=(g('searchInput').value||'').toLowerCase();
+  var searchV=(g('searchVehicle').value||'').toUpperCase();
+  var filtered=history.filter(function(h,idx){
+    h._origIdx=idx;
+    var matchText=!search||h.seller.toLowerCase().includes(search)||(h.invoiceNo&&h.invoiceNo.toLowerCase().includes(search))||(h.brokerName&&h.brokerName.toLowerCase().includes(search));
+    var matchVehicle=!searchV||(h.vehicleNo&&h.vehicleNo.toUpperCase().includes(searchV));
+    return matchText&&matchVehicle;
+  });
+  var container=g('historyList');
+  if(filtered.length===0){container.innerHTML='<div class="empty-hist"><div class="big">📋</div><p>No transactions yet.<br>Calculate and save a purchase to see history here.</p></div>';return;}
+  container.innerHTML=filtered.map(function(h,i){
+    var d=new Date(h.savedAt).toLocaleDateString('en-IN');
+    var rejected=h.rejectReasons&&h.rejectReasons.length>0;
+    var origIdx=h._origIdx!==undefined?h._origIdx:i;
+    return '<div class="hist-item" style="position:relative">'
+      +'<div class="hi-top" onclick="viewHistItem('+i+')" style="cursor:pointer"><span class="seller">'+h.seller+'</span>'
+      +'<span class="amt">'+(rejected?'<span class="badge reject">REJECTED</span>':fmt(h.finalAmount))+'</span></div>'
+      +'<div class="hi-bot" onclick="viewHistItem('+i+')" style="cursor:pointer"><span>Invoice: '+h.invoiceNo+'</span><span>Date: '+h.txDate+'</span>'
+      +(h.vehicleNo?'<span>🚛 '+h.vehicleNo+'</span>':'')
+      +(h.brokerName?'<span>🤝 '+h.brokerName+'</span>':'')
+      +'<span>'+h.netWeight.toFixed(2)+' QTL</span><span>Rate: ₹'+h.tradeRate+'/QTL</span>'
+      +'<span>Saved: '+d+'</span></div>'
+      +'<div style="display:flex;gap:7px;margin-top:8px">'
+      +'<button onclick="editHistItem('+origIdx+')" style="padding:5px 13px;font-size:12px;font-weight:600;border:1.5px solid var(--blue);color:var(--blue);background:var(--blue2);border-radius:7px;cursor:pointer">✏ Edit</button>'
+      +'<button onclick="deleteHistItem('+origIdx+')" style="padding:5px 13px;font-size:12px;font-weight:600;border:1.5px solid var(--red);color:var(--red);background:var(--red2);border-radius:7px;cursor:pointer">🗑 Delete</button>'
+      +'</div></div>';
+  }).join('');
+  g('historyList').setAttribute('data-history',JSON.stringify(filtered));
+}
+function deleteHistItem(origIdx){
+  if(!confirm('Delete this entry? This cannot be undone.')) return;
+  var history=JSON.parse(localStorage.getItem('surana_history')||'[]');
+  history.splice(origIdx,1);
+  localStorage.setItem('surana_history',JSON.stringify(history));
+  renderHistory();
+}
+function editHistItem(origIdx){
+  var history=JSON.parse(localStorage.getItem('surana_history')||'[]');
+  var h=history[origIdx];if(!h) return;
+  // Populate form fields
+  g('invoiceNo').value=h.invoiceNo||'';
+  g('txDate').value=h.txDate||'';
+  g('sellerName').value=h.seller||'';
+  g('brokerName').value=h.brokerName||'';
+  g('vehicleNo').value=h.vehicleNo||'';
+  g('tradeRate').value=h.tradeRate||'';
+  g('receivedWt').value=h.receivedWt||'';
+  g('juteBagPct').value=h.juteBagPct||'';
+  g('damagedBags').value=h.damagedBags||'';
+  g('extraDiscountPct').value=h.extraDiscountPct||'';
+  // Quality params from rows
+  if(h.rows){h.rows.forEach(function(row){
+    var map={'Moisture':'moisture','Starch':'starch','Water Damage':'waterDmg','Fungus':'fungus','Weevilled Grain':'weevilled','TFM':'tfm','Discoloured/Immature':'discoloured','Broken':'broken'};
+    var fid=map[row.param];
+    if(fid&&g(fid)) g(fid).value=parseFloat(row.val)||0;
+  });}
+  // Remove from history so re-save replaces it
+  history.splice(origIdx,1);
+  localStorage.setItem('surana_history',JSON.stringify(history));
+  showView('form');g('nb-form').classList.add('active');
+  updateLive();
+  alert('Entry loaded for editing. Make changes and click Calculate to save again.');
+}
+function viewHistItem(i){
+  var history=JSON.parse(g('historyList').getAttribute('data-history')||'[]');
+  var h=history[i];if(!h) return;
+  lastResult=h;renderReceipt(h);showView('receipt');g('nb-form').classList.remove('active');
+}
+(function(){var d=g('txDate');if(d) d.value=new Date().toISOString().split('T')[0];})();
+</script>
